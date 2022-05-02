@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/index.js"></script>
+    <title>Application</title>
+</head>
+<body>
+    <div class='container' id='container'>
+        <h1>User profile</h1>
+        <img src='images/profile-1.jpg' alt="user-profile">
+        <span>Name: </span><h3 id='name'>Test User</h3>
+        <hr />
+        <span>Email: </span><h3 id='email'>user@example.com</h3>
+        <hr />
+        <span>Interests: </span><h3 id='interests'>coding</h3>
+        <hr />
+        <button class='button' onclick="updateProfile()">Edit Profile</button>
+    </div>
+    <div class='container' id='container-edit'>
+        <h1>User profile</h1>
+        <img src='images/profile-1.jpg' alt="user-profile">
+        <span>Name: </span><label for='input-name'></label><input type="text" id='input-name' value='Anna Smith' />
+        <hr />
+        <span>Email: </span><label for='input-email'></label><input type="email" id='input-email' value='anna.smith@example.com' />
+        <hr />
+        <span>Interests: </span><label for='input-interests'></label><input type="text" id='input-interests' value='coding' />
+        <hr />
+        <button class='button' onclick="handleUpdateProfileRequest()">Update Profile</button>
+    </div>
+</body>
+</html>
