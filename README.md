@@ -10,9 +10,11 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
 
 ## Application
 
-- The application being deployed is a sample application which shows user info and allows updating them, the information is being stored and retrieved from MongoDB.
+- The application being deployed is a sample application showing user info and allows updating them.
 
-- To test the application locally, simply run `docker-compose build && docker-compose up` and navigate to http://localhost:3000
+- Data is being stored and retrieved from MongoDB.
+
+- To test the application locally, simply run `docker-compose build && docker-compose up`, then navigate to http://localhost:3000
 
 ## Architecture
 
@@ -68,6 +70,7 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
   aks-nodepool1-15508900-vmss000001   Ready    agent   4m56s   v1.22.6
   
   # Apply k8s deployment
+  $ cd kubernetes
   $ kubectl apply -f mongo-config.yaml
   $ kubectl apply -f mongo-secret.yaml
   $ kubectl apply -f mongo.yaml
@@ -108,7 +111,8 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 
 - When installing application dependencies with `npm install`, we made sure that no vulnerabilities were found in the used versions of the dependencies.
 - Docker also provides `docker scan` addon which we can configure to run periodically to scan the image against vulnerability databases such as Snyk and alert on found issues.
-- Database credentials are implemented using K8s secrets which are stored in `etcd`, the cloud provider ensures [encryption at rest](https://docs.microsoft.com/en-us/azure/aks/concepts-security#:~:text=Etcd%20store%20is%20fully%20managed%20by%20AKS%20and%20data%20is%20encrypted%20at%20rest%20within%20the%20Azure%20platform.).
+- Database credentials are implemented using K8s secrets which are stored in `etcd`, the cloud provider ensures [encryption at rest](https://docs.microsoft.com/en-us/azure/aks/concepts-security#:~:text=Etcd%20store%20is%20fully%20managed%20by%20AKS%20and%20data%20is%20encrypted%20at%20rest%20within%20the%20Azure%20platform.) with a platform-managed key.
+- // https
 
 ### Registry Security
 
@@ -123,7 +127,7 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 #### Master server security
 
 - **Public master API:** when creating the cluster we can use `--api-server-authorized-ip-ranges`  to restrict the range of IP address authorized to access the API.
-- **Private master API:** a more secure [setup](https://docs.microsoft.com/en-us/azure/aks/private-clusters) would be to have private master API; Communication with the API can then be done by establishing a VPN Tunnel, or using  `az aks command invoke` which allows invoking commands like `kubectl` remotely through Azure API without directly connecting to the cluster.
+- **Private master API:** a more secure [setup](https://docs.microsoft.com/en-us/azure/aks/private-clusters) would be to have a private master API; Communication with the API can then be done by establishing a VPN Tunnel, or using  `az aks command invoke` which allows invoking commands like `kubectl` remotely through Azure API without directly connecting to the cluster.
 
 ### OS security for nodes
 
@@ -144,9 +148,16 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 
 ## Tasks
 
-- HTTPS
-- Prometheus
-- Presentation
-  - Risks vs Mitigations
+- Test deployment -> Production deployment
+  - HTTPS with domain name
+  - Nginx Ingress controller
 
+- Improve diagram
+  - DB is a node
+  - Ingress controller (nginx)
+
+- Presentation
+  - Architecture slide
+  - Risks vs Mitigation slide
+- Prometheus
 

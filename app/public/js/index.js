@@ -2,8 +2,8 @@
     const response = await fetch(`http://${window.location.host}/get-profile`);
     const user = await response.json();
 
-    document.getElementById('name').textContent = user.name ? user.name : 'Anna Smith';
-    document.getElementById('email').textContent = user.email ? user.email : 'anna.smith@example.com';
+    document.getElementById('name').textContent = user.name ? user.name : 'Test User';
+    document.getElementById('email').textContent = user.email ? user.email : 'user@example.com';
     document.getElementById('interests').textContent = user.interests ? user.interests : 'coding';
 
     const cont = document.getElementById('container');
