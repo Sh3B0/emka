@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: sh3b0cr.azurecr.io/emka_app:latest
+        image: sh3b0cr.azurecr.io/emka_app:v1
         ports:
         - containerPort: 3000
         env:
@@ -29,7 +29,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mongo-secret
-              key: mongo-password 
+              key: mongo-password
         - name: DB_URL
           valueFrom:
             configMapKeyRef:
