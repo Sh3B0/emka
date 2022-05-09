@@ -43,10 +43,10 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
   $ az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table
   
   # Tag app image with AcrLoginServer
-  $ docker tag emka_app:latest sh3b0cr.azurecr.io/emka_app:latest
+  $ docker tag emka_app:v1 sh3b0cr.azurecr.io/emka_app:v1
   
   # Push app image to registry
-  $ docker push sh3b0cr.azurecr.io/emka_app:latest
+  $ docker push sh3b0cr.azurecr.io/emka_app:v1
   
   # Deploy app to Azure Kubernetes Service
   $ az aks create \
