@@ -43,7 +43,7 @@ metadata:
   annotations:
     service.beta.kubernetes.io/azure-dns-label-name: emka
 spec:
-  type: LoadBalancer
+  type: ClusterIP #Instead of LoadBalancer
   selector:
     app: webapp
   ports:
