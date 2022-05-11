@@ -79,7 +79,7 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
   # Show status
   $ kubectl get all
   
-  AME                                     READY   STATUS    RESTARTS   AGE
+  NAME                                     READY   STATUS    RESTARTS   AGE
   pod/mongo-deployment-7875498c-6nkjt      1/1     Running   0          52m
   pod/webapp-deployment-5d9bd7f5b5-8q8dp   1/1     Running   0          52m
   pod/webapp-deployment-5d9bd7f5b5-k698x   1/1     Running   0          52m
@@ -101,7 +101,107 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
 
 - Application was successfully deployed and is available at http://20.31.66.224
 
+## Installing Ingress Controller
 
+### 1. Install HELM Package Manager
+
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+### 2. Installing Ingress Controller
+
+```bash
+# Creating the namespace app 
+kubectl create namespace app
+
+# Add the Helm chart for Nginx Ingress
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+# Install the Helm (v3) chart for nginx ingress controller
+helm install app-ingress ingress-nginx/ingress-nginx \
+     --namespace ingress \
+     --create-namespace \
+     --set controller.replicaCount=2 \                                
+     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \  
+     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
+
+# Get the Ingress Controller public IP address
+kubectl get services --namespace ingress
+
+```
+
+### 3. Enabling HTTPS in Kubernetes using Cert Manager and Lets Encrypt
+
+```bash
+# Create a namespace for Cert Manager
+kubectl create namespace cert-manager
+
+# Get the Helm Chart for Cert Manager
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+# Install Cert Manager using Helm charts
+helm install cert-manager jetstack/cert-manager `
+    --namespace cert-manager `
+    --version v0.14.0 `
+    --set installCRDs=true
+
+# Check the created Pods
+kubectl get pods --namespace cert-manager
+
+# Install the Cluster Issuer
+kubectl apply --namespace app -f cluster-issuer.yaml
+
+# Install the Ingress resource configured with TLS/SSL
+kubectl apply --namespace app -f app-ingress.yaml
+
+# Verify that the certificate was issued
+kubectl describe cert tls-secret --namespace app 
+```
+### 4. Re-deploy everything in the app namespace
+```
+kubectl apply --namespace app -f webapp.yaml
+kubectl apply --namespace app -f mongo-secret.yaml
+kubectl apply --namespace app -f mongo-config.yaml
+kubectl apply --namespace app -f mongo.yaml
+kubectl apply --namespace app -f cluster-issuer.yaml
+kubectl apply --namespace app -f app-ingress.yaml 
+```
+### 5. Checking status
+
+```bash
+kubectl get all --namespace app
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/mongo-deployment-7875498c-jdpr2      1/1     Running   0          57m
+pod/webapp-deployment-7c8bc4bcfc-kt9sx   1/1     Running   0          57m
+pod/webapp-deployment-7c8bc4bcfc-lv4mn   1/1     Running   0          57m
+
+NAME                     TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)     AGE
+service/mongo-service    ClusterIP   10.0.52.141   <none>        27017/TCP   99m
+service/webapp-service   ClusterIP   10.0.83.254   <none>        80/TCP      99m
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mongo-deployment    1/1     1            1           101m
+deployment.apps/webapp-deployment   2/2     2            2           101m
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/mongo-deployment-7875498c      1         1         1       101m
+replicaset.apps/webapp-deployment-7c8bc4bcfc   2         2         2       101m
+
+```
+
+```bash
+kubectl get services --namespace ingress
+
+NAME                                             TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)                      AGE
+app-ingress-ingress-nginx-controller             LoadBalancer   10.0.246.68   20.23.10.150   80:31327/TCP,443:32568/TCP   44m
+app-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.169.48   <none>         443/TCP                      44m
+
+```
+Since all the traffic are now through the ingress controller, the app ip adress was now changed to https://20.23.10.150.nip.io/ and the ingress controller takes care of the routing through the [app-ingress.yaml](https://github.com/Sh3B0/emka/blob/main/kubernetes/app-ingress.yaml) configuration.
 
 ## Security Considerations
 
@@ -149,12 +249,12 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 ## Tasks
 
 - Test deployment -> Production deployment
-  - HTTPS with domain name
-  - Nginx Ingress controller
+  - HTTPS with domain name  ✅
+  - Nginx Ingress controller ✅
 
 - Improve diagram
-  - DB is a node
-  - Ingress controller (nginx)
+  - DB is a node ✅
+  - Ingress controller (nginx) ✅
 
 - Presentation
   - Architecture slide
