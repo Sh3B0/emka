@@ -143,9 +143,9 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 # Install Cert Manager using Helm charts
-helm install cert-manager jetstack/cert-manager `
-    --namespace cert-manager `
-    --version v0.14.0 `
+helm install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --version v1.5.4 \
     --set installCRDs=true
 
 # Check the created Pods
