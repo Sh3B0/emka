@@ -101,7 +101,7 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
 
 - Application was successfully deployed and is available at http://20.31.66.224
 
-## Installing Ingress Controller
+## Installing Ingress Controller and adding SSL certificate
 
 ### 1. Install HELM Package Manager
 
