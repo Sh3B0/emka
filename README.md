@@ -151,14 +151,6 @@ helm install cert-manager jetstack/cert-manager \
 # Check the created Pods
 kubectl get pods --namespace cert-manager
 
-# Install the Cluster Issuer
-kubectl apply --namespace app -f cluster-issuer.yaml
-
-# Install the Ingress resource configured with TLS/SSL
-kubectl apply --namespace app -f app-ingress.yaml
-
-# Verify that the certificate was issued
-kubectl describe cert tls-secret --namespace app 
 ```
 ### 4. Re-deploy everything in the app namespace
 ```
@@ -199,6 +191,10 @@ kubectl get services --namespace ingress
 NAME                                             TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)                      AGE
 app-ingress-ingress-nginx-controller             LoadBalancer   10.0.246.68   20.23.10.150   80:31327/TCP,443:32568/TCP   44m
 app-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.169.48   <none>         443/TCP                      44m
+
+
+# Verify that the certificate was issued
+kubectl describe cert tls-secret --namespace app
 
 ```
 Since all the traffic are now through the ingress controller, the app ip adress was now changed to https://20.23.10.150.nip.io/ and the ingress controller takes care of the routing through the [app-ingress.yaml](https://github.com/Sh3B0/emka/blob/main/kubernetes/app-ingress.yaml) configuration.
