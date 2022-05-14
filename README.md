@@ -234,7 +234,7 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 
 - Application image is deployed to Azure Container Registry with RBAC configured to only allow the K8s cluster to pull the image.
 
-  ![image-20220514175505425](./images/image-20220514175505425.png)
+  ![registry](./images/registry.png)
 
 ### Cluster Security
 
