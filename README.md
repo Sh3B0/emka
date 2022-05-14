@@ -18,9 +18,25 @@ Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on *
 
 ## Architecture
 
-![diagram](./architecture.svg)
+![diagram](./images/architecture.svg)
 
+## K8s Configuration
 
+Directory `kubernetes` contains all the yaml config files used below for deployment, here is a summary of what each file is responsible for.
+
+- `webapp.yaml`: web app `Deployment` and `Service`, specifies the address of application image in the registry and the number of replicas required (2 is set).
+
+- `mongo.yaml`: MongoDB `Deployment` and `Service`, with port forwarding and references to config and secret.
+
+- `mongo-config.yaml`: MongoDB `ConfigMap` which specifies database URL.
+
+- `mongo-secret.yaml`: MongoDB `Secret` which specifies database credentials.
+
+- `app-ingress.yaml`: 
+
+- `cluster-issuer.yaml`: 
+
+  
 
 ## Deployment
 
@@ -197,7 +213,9 @@ app-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.169.48   <n
 kubectl describe cert tls-secret --namespace app
 
 ```
-Since all the traffic are now through the ingress controller, the app ip adress was now changed to https://20.23.10.150.nip.io/ and the ingress controller takes care of the routing through the [app-ingress.yaml](https://github.com/Sh3B0/emka/blob/main/kubernetes/app-ingress.yaml) configuration.
+Since all the traffic are now through the ingress controller, the app ip adress was now changed to https://20.23.10.150.nip.io/ and the ingress controller takes care of the routing through the [app-ingress.yaml](./kubernetes/app-ingress.yaml) configuration.
+
+![website](./images/website.png)
 
 ## Security Considerations
 
@@ -206,13 +224,17 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 ### Application and Image Security
 
 - When installing application dependencies with `npm install`, we made sure that no vulnerabilities were found in the used versions of the dependencies.
-- Docker also provides `docker scan` addon which we can configure to run periodically to scan the image against vulnerability databases such as Snyk and alert on found issues.
+  - Docker provides `docker scan` addon which we can configure to run periodically to scan the image against vulnerability databases such as Snyk and alert on found issues.
+  - Azure provides [Microsoft defender for containers](https://docs.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction) which provides a similar functionality.
+
 - Database credentials are implemented using K8s secrets which are stored in `etcd`, the cloud provider ensures [encryption at rest](https://docs.microsoft.com/en-us/azure/aks/concepts-security#:~:text=Etcd%20store%20is%20fully%20managed%20by%20AKS%20and%20data%20is%20encrypted%20at%20rest%20within%20the%20Azure%20platform.) with a platform-managed key.
-- // https
+- HTTPS is configured to ensure connection security.
 
 ### Registry Security
 
 - Application image is deployed to Azure Container Registry with RBAC configured to only allow the K8s cluster to pull the image.
+
+  ![image-20220514175505425](./images/image-20220514175505425.png)
 
 ### Cluster Security
 
@@ -232,28 +254,11 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 
 ### Network Security
 
-- The private subnet where nodes are deployed should be isolated from any other subnets through firewalls, this is also the responsibility of the cloud provider.
+- The private subnet where nodes are deployed should be isolated from any other subnets through firewalls. Network security group rules are automatically configured to achieve this.
+- Extra capabilities such as DDoS protection and Azure firewall can also be configured to add enhanced protection.
 
 ### Auditing, Logging, and monitoring
 
-- 
-
-
-
-
-
-## Tasks
-
-- Test deployment -> Production deployment
-  - HTTPS with domain name  ✅
-  - Nginx Ingress controller ✅
-
-- Improve diagram
-  - DB is a node ✅
-  - Ingress controller (nginx) ✅
-
-- Presentation
-  - Architecture slide
-  - Risks vs Mitigation slide
-- Prometheus
+- Application and cloud logs should be monitored with alerts configured to respond to any security incident.
+- A third-party solution like prometheus could be used for this purpose. Azure also provides its own monitoring tool that allows querying logs.
 
