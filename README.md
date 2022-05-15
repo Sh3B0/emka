@@ -1,19 +1,11 @@
-# Final Project Report
+# EMKA
 
-> Ahmed Nouralla - a.shaaban@innopolis.university
->
-> Igor Mpore - i.mpore@innopolis.university
-
-## Idea
-
-Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on **Azure**, following security best practices recommended by [Azure](https://docs.microsoft.com/en-us/azure/aks/concepts-security) and [Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/).
+Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on **Azure**, with a focus on the security recommendations by [Azure](https://docs.microsoft.com/en-us/azure/aks/concepts-security) and [Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/).
 
 ## Application
 
 - The application being deployed is a sample application showing user info and allows updating them.
-
 - Data is being stored and retrieved from MongoDB.
-
 - To test the application locally, simply run `docker-compose build && docker-compose up`, then navigate to http://localhost:3000
 
 ## Architecture
@@ -27,13 +19,9 @@ Directory `kubernetes` contains all the yaml config files used below for deploym
 - `webapp.yaml`: web app `Deployment` and `Service`, specifies the address of application image in the registry and the number of replicas required (2 is set).
 
 - `mongo.yaml`: MongoDB `Deployment` and `Service`, with port forwarding and references to config and secret.
-
 - `mongo-config.yaml`: MongoDB `ConfigMap` which specifies database URL.
-
 - `mongo-secret.yaml`: MongoDB `Secret` which specifies database credentials.
-
 - `cluster-issuer.yaml`: creates cluster issuer resource which represents Certificate Authorities (CAs) that generates signed cerficates.
-
 - `app-ingress.yaml`: creates ingress routing configuration for the application deployments and the Ingress Controller IP address.  
 
 ## Deployment
@@ -220,11 +208,9 @@ Since all the traffic are now through the ingress controller, the app ip adress 
 Almost all security aspects are managed by the cloud provider, here we demonstrate our understanding of the security measures taken.
 
 ### Application and Image Security
-
 - When installing application dependencies with `npm install`, we made sure that no vulnerabilities were found in the used versions of the dependencies.
   - Docker provides `docker scan` addon which we can configure to run periodically to scan the image against vulnerability databases such as Snyk and alert on found issues.
   - Azure provides [Microsoft defender for containers](https://docs.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction) which provides a similar functionality.
-
 - Database credentials are implemented using K8s secrets which are stored in `etcd`, the cloud provider ensures [encryption at rest](https://docs.microsoft.com/en-us/azure/aks/concepts-security#:~:text=Etcd%20store%20is%20fully%20managed%20by%20AKS%20and%20data%20is%20encrypted%20at%20rest%20within%20the%20Azure%20platform.) with a platform-managed key.
 - HTTPS is configured to ensure connection security.
 
@@ -239,7 +225,7 @@ Almost all security aspects are managed by the cloud provider, here we demonstra
 #### Worker nodes security
 
 - As demonstrated above, **worker nodes use a private IP address range** that is not publicly accessible from the Internet. This ensures that individual nodes are not vulnerable to any remote attacks. The physical security of the nodes is ensured by the cloud provider.
-
+- Containers also run in an unprivileged mode by default.
 #### Master server security
 
 - **Public master API:** when creating the cluster we can use `--api-server-authorized-ip-ranges`  to restrict the range of IP address authorized to access the API.
