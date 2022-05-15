@@ -32,7 +32,7 @@ Directory `kubernetes` contains all the yaml config files used below for deploym
 
 - `mongo-secret.yaml`: MongoDB `Secret` which specifies database credentials.
 
-- `cluster-issuer.yaml`: Creates cluster issuer resource which represents Certificate Authorities (CAs) that generates signed cerficates.
+- `cluster-issuer.yaml`: creates cluster issuer resource which represents Certificate Authorities (CAs) that generates signed cerficates.
 
 - `app-ingress.yaml`: creates ingress routing configuration for the application deployments and the Ingress Controller IP address.  
 
