@@ -1,6 +1,6 @@
 # EMKA
 
-Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on **Azure**, with a focus on the security recommendations by [Azure](https://docs.microsoft.com/en-us/azure/aks/concepts-security) and [Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/).
+Deploying a web application (**Express** + **MongoDB**) with **Kubernetes** on **Azure**, focusing on the security aspects and recommendations by [Azure](https://docs.microsoft.com/en-us/azure/aks/concepts-security) and [Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/).
 
 ## Application
 
